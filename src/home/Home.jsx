@@ -1,27 +1,52 @@
-import React from "react";
-import { posts } from "../data/posts";
+import React, { useState, useEffect } from "react";
+// import { posts } from "../data/posts";
+import { Link } from "react-router-dom";
 
 export const Home = () => {
+
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetcher = async () => {
+      setLoading(true);
+      const res = await fetch("https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/posts")
+      const data = await res.json();
+      setPosts(data.posts);
+      setLoading(false);
+    }
+
+    fetcher();
+  }, []
+  );
+
+  if (loading) return <div>・・・読み込み中・・・</div>
+
   return (
     <div>
       <ul>
         {posts.map((post) => {
           return (
 
-            <li class="border border-gray-200 p-4 mb-8 max-w-3xl mx-auto my-10 px-4">
-              <div class="flex justify-between">
-                <div>{new Date(post.createdAt).toLocaleDateString()}</div>
-                <div class="flex">{post.categories.map((category) => {
-                  return (
-                    <div class="border border-blue-600 rounded-md text-blue-600 text-sm mr-2 py-1 px-2">{category}</div>
-                  )
-                })}
-                </div>
-              </div>
+            <li key={post.id} className="border border-gray-200 p-4 mb-8 max-w-3xl mx-auto my-10 px-4">
+              <Link to={`/posts/${post.id}`}>
+                <div className="flex justify-between">
 
-              <p class="text-2xl">{post.title}</p>
-              {/* ↓丸覚えで！ */}
-              <div class="leading-relaxed" dangerouslySetInnerHTML={{ __html: post.content }} />
+                  {/* ↓丸覚えで！ */}
+                  <div>{new Date(post.createdAt).toLocaleDateString()}</div>
+                  <div className="flex">{post.categories.map((category, index) => {
+                    return (
+                      <div key={index} className="border border-blue-600 rounded-md text-blue-600 text-sm mr-2 py-1 px-2">{category}</div>
+                    )
+                  })}
+                  </div>
+                </div>
+
+                <p className="text-2xl">{post.title}</p>
+                {/* ↓丸覚えで！ */}
+                <div className="leading-relaxed" dangerouslySetInnerHTML={{ __html: post.content }} />
+              </Link>
+
             </li>
 
           );
