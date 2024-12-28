@@ -1,3 +1,5 @@
+/* これ後で不要になる！
+
 .App {
   text-align: center;
 }
@@ -32,7 +34,8 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
-}
+} */
